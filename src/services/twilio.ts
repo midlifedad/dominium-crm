@@ -12,9 +12,50 @@ if (!accountSid || !authToken || !verifyServiceSid) {
 const client = twilio(accountSid, authToken);
 
 /**
+ * Validate Twilio configuration on startup
+ */
+export async function validateTwilioConfig(): Promise<{ valid: boolean; error?: string }> {
+  if (!accountSid || !authToken || !verifyServiceSid) {
+    return { valid: false, error: 'Missing required Twilio credentials' };
+  }
+
+  // Validate SID format
+  if (!verifyServiceSid.startsWith('VA')) {
+    return { valid: false, error: `Invalid Verify Service SID format: should start with 'VA', got '${verifyServiceSid.substring(0, 2)}'` };
+  }
+
+  try {
+    // Try to fetch the verify service to confirm it exists
+    const service = await client.verify.v2.services(verifyServiceSid).fetch();
+    console.log('Twilio Verify service validated:', {
+      sid: service.sid,
+      friendlyName: service.friendlyName,
+      codeLength: service.codeLength,
+    });
+    return { valid: true };
+  } catch (error: any) {
+    console.error('Twilio config validation failed:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+    });
+    return { valid: false, error: `Verify service validation failed: ${error.message}` };
+  }
+}
+
+/**
  * Send OTP verification code to phone number
  */
 export async function startVerification(phoneNumber: string): Promise<{ success: boolean; message: string }> {
+  // Log configuration status for debugging
+  console.log('Twilio config check:', {
+    hasAccountSid: !!accountSid,
+    hasAuthToken: !!authToken,
+    hasVerifyServiceSid: !!verifyServiceSid,
+    verifyServiceSidPrefix: verifyServiceSid?.substring(0, 2),
+    phoneNumber: phoneNumber,
+  });
+
   try {
     const verification = await client.verify.v2
       .services(verifyServiceSid!)
@@ -23,17 +64,34 @@ export async function startVerification(phoneNumber: string): Promise<{ success:
         channel: 'sms',
       });
 
+    console.log('Verification sent successfully:', verification.status);
     return {
       success: verification.status === 'pending',
       message: verification.status === 'pending'
         ? 'Verification code sent'
         : 'Failed to send verification code',
     };
-  } catch (error) {
-    console.error('Twilio verification error:', error);
+  } catch (error: any) {
+    console.error('Twilio verification error:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+      moreInfo: error.moreInfo,
+    });
+
+    // Provide more specific error messages
+    let userMessage = 'Failed to send verification code. Please try again.';
+    if (error.code === 20003) {
+      userMessage = 'Service authentication error. Please contact support.';
+    } else if (error.code === 20404) {
+      userMessage = 'Verification service not found. Please contact support.';
+    } else if (error.message?.includes('not valid')) {
+      userMessage = 'Configuration error. Please contact support.';
+    }
+
     return {
       success: false,
-      message: 'Failed to send verification code. Please try again.',
+      message: userMessage,
     };
   }
 }
