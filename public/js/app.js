@@ -47,21 +47,51 @@ function setupEventListeners() {
   document.getElementById('verificationCode').addEventListener('input', handleCodeInput);
 }
 
+// Track previous phone digits for delete detection
+let previousPhoneDigits = '';
+
 // Phone number formatting
 function formatPhoneInput(e) {
-  let value = e.target.value.replace(/\D/g, '');
+  const input = e.target;
+  const cursorPos = input.selectionStart;
+  const beforeCursor = input.value.substring(0, cursorPos);
+  const digitsBeforeCursor = beforeCursor.replace(/\D/g, '').length;
 
-  if (value.length > 10) {
-    value = value.slice(0, 10);
+  let digits = input.value.replace(/\D/g, '');
+
+  if (digits.length > 10) {
+    digits = digits.slice(0, 10);
   }
 
-  if (value.length >= 6) {
-    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
-  } else if (value.length >= 3) {
-    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+  // Format the number
+  let formatted = '';
+  if (digits.length > 0) {
+    formatted = '(' + digits.substring(0, 3);
+    if (digits.length >= 3) {
+      formatted += ') ';
+      if (digits.length > 3) {
+        formatted += digits.substring(3, 6);
+        if (digits.length > 6) {
+          formatted += '-' + digits.substring(6);
+        }
+      }
+    }
   }
 
-  e.target.value = value;
+  input.value = formatted;
+
+  // Restore cursor position based on digit count
+  let newCursorPos = 0;
+  let digitCount = 0;
+  for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
+    newCursorPos = i + 1;
+    if (/\d/.test(formatted[i])) {
+      digitCount++;
+    }
+  }
+
+  input.setSelectionRange(newCursorPos, newCursorPos);
+  previousPhoneDigits = digits;
 }
 
 // Code input handling
