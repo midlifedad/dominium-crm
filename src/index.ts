@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { apiRouter } from './routes/api.js';
+import { validateTwilioConfig } from './services/twilio.js';
 
 dotenv.config();
 
@@ -76,9 +77,17 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`SMS Consent Portal running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+
+  // Validate Twilio configuration on startup
+  const twilioValidation = await validateTwilioConfig();
+  if (twilioValidation.valid) {
+    console.log('✓ Twilio configuration validated successfully');
+  } else {
+    console.error('✗ Twilio configuration error:', twilioValidation.error);
+  }
 });
 
 export default app;
