@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMS Consent Portal - Dominium CRM</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SMS Consent Portal</h1>
+      <p class="brand-name" id="brandName">Dominium CRM</p>
+    </header>
+
+    <!-- State 1: Phone Number Entry -->
+    <section id="phoneSection" class="card">
+      <h2>Verify Your Phone Number</h2>
+      <p>Enter your phone number to manage your SMS preferences.</p>
+
+      <form id="phoneForm">
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            name="phoneNumber"
+            placeholder="(555) 123-4567"
+            required
+            autocomplete="tel"
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span class="btn-text">Send Verification Code</span>
+          <span class="btn-loading" hidden>Sending...</span>
+        </button>
+      </form>
+
+      <div class="error-message" id="phoneError" hidden></div>
+    </section>
+
+    <!-- State 2: Code Verification -->
+    <section id="codeSection" class="card" hidden>
+      <h2>Enter Verification Code</h2>
+      <p>We sent a 6-digit code to <span id="maskedPhone"></span></p>
+
+      <form id="codeForm">
+        <div class="form-group">
+          <label for="verificationCode">Verification Code</label>
+          <input
+            type="text"
+            id="verificationCode"
+            name="code"
+            placeholder="123456"
+            maxlength="6"
+            pattern="\d{6}"
+            required
+            autocomplete="one-time-code"
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span class="btn-text">Verify</span>
+          <span class="btn-loading" hidden>Verifying...</span>
+        </button>
+      </form>
+
+      <div class="secondary-actions">
+        <button type="button" class="btn btn-link" id="resendCode">Resend Code</button>
+        <button type="button" class="btn btn-link" id="changeNumber">Change Number</button>
+      </div>
+
+      <div class="error-message" id="codeError" hidden></div>
+    </section>
+
+    <!-- State 3: Consent Status -->
+    <section id="statusSection" class="card" hidden>
+      <h2>Your SMS Preferences</h2>
+
+      <div class="status-display">
+        <div class="status-indicator" id="statusIndicator">
+          <span class="status-icon" id="statusIcon"></span>
+          <span class="status-text" id="statusText">Loading...</span>
+        </div>
+        <p class="status-detail" id="statusDetail"></p>
+      </div>
+
+      <div class="consent-actions">
+        <button type="button" class="btn btn-success" id="optInBtn">
+          <span class="btn-text">Opt In</span>
+          <span class="btn-loading" hidden>Processing...</span>
+        </button>
+        <button type="button" class="btn btn-danger" id="optOutBtn">
+          <span class="btn-text">Opt Out</span>
+          <span class="btn-loading" hidden>Processing...</span>
+        </button>
+      </div>
+
+      <div class="success-message" id="statusSuccess" hidden></div>
+      <div class="error-message" id="statusError" hidden></div>
+
+      <button type="button" class="btn btn-link" id="logoutBtn">Verify Different Number</button>
+    </section>
+
+    <!-- Compliance Information -->
+    <footer class="compliance-info">
+      <h3>About Our SMS Messages</h3>
+      <ul id="messageTypes">
+        <li>Promotional messages</li>
+        <li>Service updates</li>
+        <li>Account notifications</li>
+      </ul>
+      <p id="messageFrequency">Message frequency: Up to 4 messages per month</p>
+      <p id="optOutInstructions">Reply STOP to opt out at any time. Message and data rates may apply.</p>
+      <div class="legal-links">
+        <a href="/privacy" id="privacyLink">Privacy Policy</a>
+        <span class="divider">|</span>
+        <a href="/terms" id="termsLink">Terms of Service</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

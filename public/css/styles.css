@@ -1,0 +1,336 @@
+/* CSS Reset and Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --success-color: #16a34a;
+  --success-hover: #15803d;
+  --danger-color: #dc2626;
+  --danger-hover: #b91c1c;
+  --text-color: #1f2937;
+  --text-muted: #6b7280;
+  --bg-color: #f9fafb;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --error-color: #dc2626;
+  --error-bg: #fef2f2;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.brand-name {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card > p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.1s;
+  width: 100%;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: var(--success-hover);
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--danger-hover);
+}
+
+.btn-link {
+  background: none;
+  color: var(--primary-color);
+  padding: 0.5rem;
+  width: auto;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.btn-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-loading::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Secondary Actions */
+.secondary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Consent Actions */
+.consent-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.consent-actions .btn {
+  flex: 1;
+}
+
+/* Status Display */
+.status-display {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.status-icon {
+  font-size: 1.5rem;
+}
+
+.status-indicator.opted-in {
+  color: var(--success-color);
+}
+
+.status-indicator.opted-out {
+  color: var(--danger-color);
+}
+
+.status-indicator.unknown {
+  color: var(--text-muted);
+}
+
+.status-detail {
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Messages */
+.error-message,
+.success-message {
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.success-message {
+  background-color: #f0fdf4;
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+/* Compliance Footer */
+.compliance-info {
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.compliance-info h3 {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
+}
+
+.compliance-info ul {
+  list-style: disc;
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.compliance-info li {
+  margin-bottom: 0.25rem;
+}
+
+.compliance-info p {
+  margin-bottom: 0.5rem;
+}
+
+.legal-links {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.legal-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.legal-links a:hover {
+  text-decoration: underline;
+}
+
+.legal-links .divider {
+  margin: 0 0.5rem;
+  color: var(--border-color);
+}
+
+/* Hidden State */
+[hidden] {
+  display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .consent-actions {
+    flex-direction: column;
+  }
+}
