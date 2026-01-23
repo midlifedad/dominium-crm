@@ -6,7 +6,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { apiRouter } from './routes/api.js';
+import { voiceRouter } from './routes/voice.js';
 import { validateTwilioConfig } from './services/twilio.js';
+import { validateRetellConfig } from './services/retell.js';
+import { validateDbConnection } from './lib/db.js';
 
 dotenv.config();
 
@@ -58,8 +61,11 @@ app.use(express.urlencoded({ extended: true }));
 // Static files (frontend)
 app.use(express.static(path.join(__dirname, '../public')));
 
-// API routes
+// API routes (SMS consent portal)
 app.use('/api', apiRouter);
+
+// Voice routes (Twilio webhooks)
+app.use('/voice', voiceRouter);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -78,15 +84,31 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 app.listen(PORT, async () => {
-  console.log(`SMS Consent Portal running on port ${PORT}`);
+  console.log(`Dominium CRM running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 
-  // Validate Twilio configuration on startup
+  // Validate database connection
+  const dbValidation = await validateDbConnection();
+  if (dbValidation.connected) {
+    console.log('✓ Database connected');
+  } else {
+    console.error('✗ Database connection failed:', dbValidation.error);
+  }
+
+  // Validate Twilio configuration
   const twilioValidation = await validateTwilioConfig();
   if (twilioValidation.valid) {
-    console.log('✓ Twilio configuration validated successfully');
+    console.log('✓ Twilio Verify service validated');
   } else {
     console.error('✗ Twilio configuration error:', twilioValidation.error);
+  }
+
+  // Validate Retell configuration
+  const retellValidation = validateRetellConfig();
+  if (retellValidation.valid) {
+    console.log('✓ Retell configuration valid');
+  } else {
+    console.warn('⚠ Retell not configured:', retellValidation.error);
   }
 });
 
